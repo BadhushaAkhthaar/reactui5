@@ -1,0 +1,60 @@
+_schema-version: "3.2"
+ID: salesorderapp
+version: 0.0.1
+modules:
+- name: salesorder-approuter
+  type: approuter.nodejs
+  path: salesorderapprouter
+  requires:
+  - name: salesorderapp_html_repo_runtime
+  - name: uaa_salesorderapp
+  - name: salesorderapp_dest
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+- name: salesorderapp_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: salesorderapp_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - salesorderapp-content.zip
+      name: salesorderapp
+      target-path: resources/
+- name: salesorderapp
+  type: html5
+  path: salesorderui
+  build-parameters:
+    builder: custom
+    commands:
+    - npm install
+    - npm run build
+    supported-platforms: []
+resources:
+- name: salesorderapp_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: uaa_salesorderapp
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: salesorderapp-xsuaa-service
+    service-plan: application
+- name: salesorderapp_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: salesorderapp_dest
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite

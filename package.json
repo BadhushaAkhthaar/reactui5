@@ -1,0 +1,11 @@
+{
+  "name": "salesorderapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-salesorderui": "cd salesorderui && npm run build"
+  },
+  "author": "",
+  "license": "ISC"
+}
